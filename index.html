@@ -279,14 +279,31 @@
   </section>
   
     <script>
-     function forceScrollTop() {
-      window.scrollTo(0, 0);
-      setTimeout(function() { window.scrollTo(0, 0); }, 50);
-      setTimeout(function() { window.scrollTo(0, 0); }, 200);
-    }
-    window.addEventListener('DOMContentLoaded', forceScrollTop);
-    window.addEventListener('load', forceScrollTop);
-    });
+        (function() {
+      function removeHash() {
+        if (window.location.hash) {
+          history.replaceState('', document.title, window.location.pathname + window.location.search);
+        }
+      }
+      function blurActive() {
+        if (document.activeElement && document.activeElement !== document.body) {
+          document.activeElement.blur();
+        }
+      }
+      function forceScrollTopAggressive() {
+        let count = 0;
+        const maxTries = 20;
+        const interval = setInterval(function() {
+          window.scrollTo(0, 0);
+          blurActive();
+          removeHash();
+          count++;
+          if (count > maxTries) clearInterval(interval);
+        }, 30);
+      }
+      window.addEventListener('DOMContentLoaded', forceScrollTopAggressive);
+      window.addEventListener('load', forceScrollTopAggressive);
+    })();
   </script>
 
   
